@@ -58,9 +58,7 @@
 
             <h1>Add Product</h1>
 
-
            <div class="div_deg">
-             
 
               <form action="{{url('upload_product')}}" method="Post" enctype="multipart/form-data">
 
@@ -76,7 +74,6 @@
                     <textarea name="description" required></textarea>
                   </div>
 
-
                   <div class="input_deg">
                     <label>Price (LKR)</label>
                     <input type="text" name="price">
@@ -90,21 +87,17 @@
                   <div class="input_deg">
                     <label>Product category</label>
 
-
-        <select name="category" required>
-
+              <select name="category" required>
 
               <option>Select a Option</option>
 
-            @foreach($category as $category)
+              @foreach($category as $category)
 
               <option value="{{$category->category_name}}">{{$category->category_name}}</option>
 
-            @endforeach
+              @endforeach
 
-
-
-       </select>
+              </select>
                   </div>
 
                   <div class="input_deg">
@@ -112,19 +105,14 @@
                     <input type="file" name="image">
                   </div>
 
-
                   <div class="input_deg">
                      
                     <input class="btn btn-success" type="submit" value="Add Product">
                   </div>
 
-
               </form>
 
-
-
            </div>
-
 
           </div> 
       </div>

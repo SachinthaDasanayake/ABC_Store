@@ -60,22 +60,35 @@
 
           	<h1 style="color: white;">Add Category</h1>
 
-
           	<div class="div_deg">
 
-
-
+			<!-- Display validation errors -->
+			@if ($errors->any())
+			<div class="alert alert-danger">
+				<ul>
+					@foreach ($errors->all() as $error)
+						<li>{{ $error }}</li>
+					@endforeach
+				</ul>
+			</div>
+			@endif
 
            <form action="{{url('add_category')}}" method="post">
 
            	@csrf
            		
            		<div>
-           			<input type="text" name="category" required>
-           		 
+					<input 
+						type="text" 
+						name="category" 
+						placeholder="Enter category name" 
+						required 
+						maxlength="50"
+						pattern="^[a-zA-Z0-9\s]+$"
+						title="Only alphanumeric characters and spaces are allowed.">
+           		 	
            			<input class="btn btn-primary" type="submit" value="Add Category">
            		</div>
-
 
            </form>
 
@@ -103,10 +116,8 @@
                     <a class="btn btn-success" href="{{url('edit_category',$data->id)}}">Edit</a>
                   </td>
 
-                  
-
                   <td>
-     <a class="btn btn-danger" onclick="confirmation(event)" href="{{url('delete_category',$data->id)}}">Delete</a>
+     				<a class="btn btn-danger" onclick="confirmation(event)" href="{{url('delete_category',$data->id)}}">Delete</a>
                   </td>
            			</tr>
 
@@ -116,9 +127,6 @@
 
 
            </div>
-
-
-
 
           </div> 
       </div>

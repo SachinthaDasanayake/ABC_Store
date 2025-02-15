@@ -14,7 +14,6 @@ class Cart extends Model
         return $this->hasOne('App\Models\User','id','user_id');
     }
 
-
     public function product()
     {
         return $this->hasOne('App\Models\Product','id','product_id');

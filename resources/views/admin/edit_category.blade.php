@@ -36,23 +36,25 @@
 
             <div class="div_deg">
               
-             
-
-
               <form action="{{url('update_category',$data->id)}}" method="post">
 
                 @csrf
 
-<input type="text" name="category" value="{{$data->category_name}}">
+                <input 
+                    type="text" 
+                    name="category" 
+                    placeholder="Enter category name" 
+                    required 
+                    maxlength="50"
+                    pattern="^[a-zA-Z0-9\s]+$"
+                    title="Only alphanumeric characters and spaces are allowed."
+                    value="{{$data->category_name}}">
 
-<input class="btn btn-primary" type="submit" value="Update Category">
+                <input class="btn btn-primary" type="submit" value="Update Category">
 
               </form>
 
-
-
             </div>
-
 
           </div> 
       </div>
