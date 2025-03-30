@@ -18,21 +18,21 @@
 
       @if(Auth::user()->usertype === 'admin' || Auth::user()->usertype === 'operationm')
       <!-- Category: Admin and Operation Manager -->
-      <li><a href="{{ url('view_category') }}"> <i class="icon-home"></i>Category </a></li>
+      <li><a href="{{ url('viewCategory') }}"> <i class="icon-home"></i>Category </a></li>
 
       <!-- Products: Admin and Operation Manager -->
       <li><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"> <i
         class="icon-windows"></i>Products </a>
       <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
-        <li><a href="{{ url('add_product') }}">Add Product</a></li>
-        <li><a href="{{ url('view_product') }}">View Product</a></li>
+        <li><a href="{{ url('addProduct') }}">Add Product</a></li>
+        <li><a href="{{ url('viewProduct') }}">View Product</a></li>
       </ul>
       </li>
     @endif
 
       @if(Auth::user()->usertype === 'admin' || Auth::user()->usertype === 'salesm')
       <!-- Orders: Admin and Sales Manager -->
-      <li><a href="{{ url('view_orders') }}"> <i class="icon-grid"></i>Orders </a></li>
+      <li><a href="{{ url('viewOrders') }}"> <i class="icon-grid"></i>Orders </a></li>
     @endif
     </ul>
   </nav>

@@ -68,7 +68,7 @@
 						</div>
 					@endif
 
-					<form action="{{url('add_category')}}" method="post">
+					<form action="{{url('addCategory')}}" method="post">
 
 						@csrf
 
@@ -96,11 +96,11 @@
 							<tr>
 								<td>{{$data->category_name}}</td>
 								<td>
-									<a class="btn btn-success" href="{{url('edit_category', $data->id)}}">Edit</a>
+									<a class="btn btn-success" href="{{url('editCategory', $data->id)}}">Edit</a>
 								</td>
 								<td>
 									<a class="btn btn-danger" onclick="confirmation(event)"
-										href="{{url('delete_category', $data->id)}}">Delete</a>
+										href="{{url('deleteCategory', $data->id)}}">Delete</a>
 								</td>
 							</tr>
 

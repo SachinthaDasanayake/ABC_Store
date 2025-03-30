@@ -1,62 +1,91 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ProfileController;
 
-// Public Routes
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
 Route::get('/', [HomeController::class, 'home']);
-Route::get('product_details/{id}', [HomeController::class, 'product_details']);
-Route::get('shop', [HomeController::class, 'shop']);
-Route::get('why', [HomeController::class, 'why']);
-Route::get('testimonial', [HomeController::class, 'testimonial']);
-Route::get('contact', [HomeController::class, 'contact']);
+Route::get('/product-details/{id}', [HomeController::class, 'productDetails'])->name('product.details');
+Route::get('/shop', [HomeController::class, 'shop'])->name('shop');
+Route::get('/why', [HomeController::class, 'why'])->name('why');
+Route::get('/testimonial', [HomeController::class, 'testimonial'])->name('testimonial');
+Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
-// Authenticated Routes
-Route::middleware(['auth', 'verified', 'customer'])->group(function () {
-    Route::get('/dashboard', [HomeController::class, 'login_home'])->name('dashboard');
-    Route::get('/myorders', [HomeController::class, 'myorders']);
-    Route::get('add_cart/{id}', [HomeController::class, 'add_cart']);
-    Route::get('mycart', [HomeController::class, 'mycart']);
-    Route::get('delete_cart/{id}', [HomeController::class, 'delete_cart']);
-    Route::post('comfirm_order', [HomeController::class, 'comfirm_order']);
-
-    // Profile Management
-    Route::controller(ProfileController::class)->group(function () {
-        Route::get('/profile', 'edit')->name('profile.edit');
-        Route::patch('/profile', 'update')->name('profile.update');
-        Route::delete('/profile', 'destroy')->name('profile.destroy');
-    });
+/*
+|--------------------------------------------------------------------------
+| Authenticated Customer Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'verified', 'customer'])->controller(HomeController::class)->group(function () {
+    Route::get('/dashboard', 'loginHome')->name('dashboard');
+    Route::get('/my-orders', 'myOrders')->name('orders.index');
+    Route::get('/add-cart/{id}', 'addCart')->name('cart.add');
+    Route::get('/my-cart', 'myCart')->name('cart.index');
+    Route::get('/delete-cart/{id}', 'deleteCart')->name('cart.delete');
+    Route::post('/confirm-order', 'confirmOrder')->name('order.confirm');
 });
 
-// Admin, Operation Manager, and Sales Manager Routes
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('admin/dashboard', [HomeController::class, 'index']);
-    Route::get('view_category', [AdminController::class, 'view_category']);
-    Route::post('add_category', [AdminController::class, 'add_category']);
-    Route::get('delete_category/{id}', [AdminController::class, 'delete_category']);
-    Route::get('edit_category/{id}', [AdminController::class, 'edit_category']);
-    Route::post('update_category/{id}', [AdminController::class, 'update_category']);
-    Route::get('add_product', [AdminController::class, 'add_product']);
-    Route::post('upload_product', [AdminController::class, 'upload_product']);
-    Route::get('view_product', [AdminController::class, 'view_product']);
-    Route::get('delete_product/{id}', [AdminController::class, 'delete_product']);
-    Route::get('update_product/{id}', [AdminController::class, 'update_product']);
-    Route::post('edit_product/{id}', [AdminController::class, 'edit_product']);
-    Route::get('product_search', [AdminController::class, 'product_search']);
-    Route::get('view_orders', [AdminController::class, 'view_order']);
-    Route::get('on_the_way/{id}', [AdminController::class, 'on_the_way']);
-    Route::get('delivered/{id}', [AdminController::class, 'delivered']);
-    Route::get('print_pdf/{id}', [AdminController::class, 'print_pdf']);
+/*
+|--------------------------------------------------------------------------
+| Profile Management
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth'])->controller(ProfileController::class)->prefix('profile')->name('profile.')->group(function () {
+    Route::get('/', 'edit')->name('edit');
+    Route::patch('/', 'update')->name('update');
+    Route::delete('/', 'destroy')->name('destroy');
 });
 
-// Stripe Routes
+/*
+|--------------------------------------------------------------------------
+| Admin Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
+
+    // Category
+    Route::get('/categories', [AdminController::class, 'viewCategory'])->name('category.index');
+    Route::post('/categories', [AdminController::class, 'addCategory'])->name('category.store');
+    Route::get('/categories/{id}/delete', [AdminController::class, 'deleteCategory'])->name('category.delete');
+    Route::get('/categories/{id}/edit', [AdminController::class, 'editCategory'])->name('category.edit');
+    Route::post('/categories/{id}/update', [AdminController::class, 'updateCategory'])->name('category.update');
+
+    // Product
+    Route::get('/products/create', [AdminController::class, 'addProduct'])->name('product.create');
+    Route::post('/products', [AdminController::class, 'uploadProduct'])->name('product.store');
+    Route::get('/products', [AdminController::class, 'viewProduct'])->name('product.index');
+    Route::get('/products/{id}/delete', [AdminController::class, 'deleteProduct'])->name('product.delete');
+    Route::get('/products/{id}/edit', [AdminController::class, 'updateProduct'])->name('product.edit');
+    Route::post('/products/{id}/update', [AdminController::class, 'editProduct'])->name('product.update');
+    Route::get('/products/search', [AdminController::class, 'productSearch'])->name('product.search');
+
+    // Orders
+    Route::get('/orders', [AdminController::class, 'viewOrder'])->name('order.index');
+    Route::get('/orders/{id}/on-the-way', [AdminController::class, 'onTheWay'])->name('order.onTheWay');
+    Route::get('/orders/{id}/delivered', [AdminController::class, 'delivered'])->name('order.delivered');
+    Route::get('/orders/{id}/print', [AdminController::class, 'printPdf'])->name('order.printPdf');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Stripe Payment Routes
+|--------------------------------------------------------------------------
+*/
 Route::controller(HomeController::class)->group(function () {
-    Route::get('stripe/{value}', 'stripe');
-    Route::post('stripe/{value}', 'stripePost')->name('stripe.post');
+    Route::get('/stripe/{value}', 'stripe')->name('stripe.form');
+    Route::post('/stripe/{value}', 'stripePost')->name('stripe.post');
 });
 
-// Authentication Routes
+/*
+|--------------------------------------------------------------------------
+| Authentication Routes
+|--------------------------------------------------------------------------
+*/
 require __DIR__ . '/auth.php';

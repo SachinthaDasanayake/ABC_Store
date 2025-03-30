@@ -9,26 +9,25 @@ use App\Models\Product;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UploadProductRequest;
+use App\Services\ImageService;
 
 class AdminController extends Controller
 {
-    public function view_category()
-    {   
-        $data = Category::all();
+    public function viewCategory()
+    {
+        $categories = Category::all();
 
-        return view('admin.category',compact('data'));
-    } 
+        return view('admin.category', compact('categories'));
+    }
 
-    public function add_category(StoreCategoryRequest $request)
+    public function addCategory(StoreCategoryRequest $request)
     {
         try {
-            // Create and save category
-            $category = new Category();
-            $category->category_name = $request->category;
-            $category->save();
+            Category::create([
+                'category_name' => $request->category,
+            ]);
 
             toastr()->timeOut(10000)->closeButton()->addSuccess('Category Added Successfully');
-
         } catch (\Exception $e) {
             toastr()->timeOut(10000)->closeButton()->addError('Failed to add category. Please try again.');
         }
@@ -36,63 +35,56 @@ class AdminController extends Controller
         return redirect()->back();
     }
 
-    public function delete_category($id)
+    public function deleteCategory(int $id)
     {
-        $data = Category::find($id);
-        $data->delete();
+        Category::destroy($id);
 
         toastr()->timeOut(10000)->closeButton()->addSuccess('Category Deleted Successfully');
 
         return redirect()->back();
     }
 
-    public function edit_category($id)
+    public function editCategory(int $id)
     {
-        $data = Category::find($id);
+        $category = Category::findOrFail($id);
 
-        return view('admin.edit_category',compact('data'));
+        return view('admin.edit_category', compact('category'));
     }
 
-    public function update_category(Request $request,$id)
+    public function updateCategory(Request $request, int $id)
     {
-        $data = Category::find($id);
-        $data->category_name= $request->category;
-        $data->save();
+        $category = Category::findOrFail($id);
+        $category->update([
+            'category_name' => $request->category,
+        ]);
 
         toastr()->timeOut(10000)->closeButton()->addSuccess('Category Updated Successfully');
 
-        return redirect('/view_category');
+        return redirect()->route('view_category');
     }
 
-    public function add_product()
+    public function addProduct()
     {
-        $category = Category::all();
+        $categories = Category::all();
 
-        return view('admin.add_product',compact('category'));
+        return view('admin.add_product', compact('categories'));
     }
 
-    public function upload_product(UploadProductRequest $request)
+    public function uploadProduct(UploadProductRequest $request, ImageService $imageService)
     {
         try {
-            $data = new Product;
-            $data->title = $request->title;
-            $data->description = $request->description;
-            $data->price = $request->price;
-            $data->quantity = $request->qty;
-            $data->category = $request->category;
+            $imageName = $imageService->uploadImage($request->file('image'));
 
-            $image = $request->image;
-
-            if ($image) {
-                $imagename = time() . '.' . $image->getClientOriginalExtension();
-                $request->image->move('products', $imagename);
-                $data->image = $imagename;
-            }
-
-            $data->save();
+            Product::create([
+                'title' => $request->title,
+                'description' => $request->description,
+                'price' => $request->price,
+                'quantity' => $request->qty,
+                'category' => $request->category,
+                'image' => $imageName,
+            ]);
 
             toastr()->timeOut(10000)->closeButton()->addSuccess('Product Added Successfully');
-
         } catch (\Exception $e) {
             toastr()->timeOut(10000)->closeButton()->addError('Failed to add product. Please try again.');
         }
@@ -100,98 +92,100 @@ class AdminController extends Controller
         return redirect()->back();
     }
 
-    public function view_product()
+    public function viewProduct()
     {
-        $product = Product::paginate(3);
-        return view('admin.view_product',compact('product'));
+        $products = Product::paginate(3);
+
+        return view('admin.view_product', compact('products'));
     }
 
-    public function delete_product($id)
+    public function deleteProduct(int $id)
     {
-        $data = Product::find($id);
-        $image_path = public_path('products/'.$data->image);
+        $product = Product::findOrFail($id);
 
-        if(file_exists($image_path))
-        {
-            unlink($image_path);
+        $imagePath = public_path('products/' . $product->image);
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
         }
 
-        $data->delete();
+        $product->delete();
 
-        toastr()->timeOut(10000)->closeButton()->addSuccess('Product Added Successfully');
+        toastr()->timeOut(10000)->closeButton()->addSuccess('Product Deleted Successfully');
 
         return redirect()->back();
     }
 
-    public function update_product($id)
+    public function updateProduct(int $id)
     {
-        $data = Product::find($id);
-        $category = Category::all();
+        $product = Product::findOrFail($id);
+        $categories = Category::all();
 
-        return view('admin.update_page',compact('data','category'));
+        return view('admin.update_page', compact('product', 'categories'));
     }
 
-    public function edit_product(Request $request,$id)
+    public function editProduct(Request $request, int $id)
     {
-        $data = Product::find($id);
-        $data->title = $request->title;
-        $data->description = $request->description;
-        $data->price = $request->price;
-        $data->quantity = $request->quantity;
-        $data->category = $request->category;
-        $image = $request->image;
+        $product = Product::findOrFail($id);
 
-        if($image)
-        {
-        $imagename = time().'.'.$image->getClientOriginalExtension();
-        $request->image->move('products',$imagename);
-        $data->image = $imagename;
+        $imageName = $product->image;
+
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->getClientOriginalExtension();
+            $request->image->move(public_path('products'), $imageName);
         }
 
-        $data->save();
+        $product->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'price' => $request->price,
+            'quantity' => $request->quantity,
+            'category' => $request->category,
+            'image' => $imageName,
+        ]);
 
         toastr()->timeOut(10000)->closeButton()->addSuccess('Product Updated Successfully');
 
-        return redirect('/view_product');
+        return redirect()->route('view_product');
     }
 
-    public function product_search(Request $request)
+    public function productSearch(Request $request)
     {
-        $search = $request->search; 
-        $product = Product::where('title','LIKE','%'.$search.'%')->orWhere('category','LIKE','%'.$search.'%')->paginate(3);
+        $search = $request->search;
 
-        return view('admin.view_product',compact('product'));
+        $products = Product::where('title', 'LIKE', "%$search%")
+            ->orWhere('category', 'LIKE', "%$search%")
+            ->paginate(3);
+
+        return view('admin.view_product', compact('products'));
     }
 
-    public function view_order()
-    {   
-        $data = Order::all();
-
-        return view('admin.order',compact('data'));
-    }
-
-    public function on_the_way($id)
+    public function viewOrder()
     {
-        $data = Order::find($id);
-        $data->status = 'On the way';
-        $data->save();
+        $orders = Order::all();
 
-        return redirect('/view_orders');
+        return view('admin.order', compact('orders'));
     }
 
-    public function delivered($id)
+    public function onTheWay(int $id)
     {
-        $data = Order::find($id);
-        $data->status = 'Delivered';
-        $data->save();
+        $order = Order::findOrFail($id);
+        $order->update(['status' => 'On the way']);
 
-        return redirect('/view_orders');
+        return redirect()->route('view_orders');
     }
 
-    public function print_pdf($id)
+    public function delivered(int $id)
     {
-        $data = Order::find($id);
-        $pdf = Pdf::loadView('admin.invoice',compact('data'));
+        $order = Order::findOrFail($id);
+        $order->update(['status' => 'Delivered']);
+
+        return redirect()->route('view_orders');
+    }
+
+    public function printPdf(int $id)
+    {
+        $order = Order::findOrFail($id);
+        $pdf = Pdf::loadView('admin.invoice', compact('order'));
 
         return $pdf->download('invoice.pdf');
     }

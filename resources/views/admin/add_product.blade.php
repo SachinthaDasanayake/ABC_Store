@@ -53,7 +53,7 @@
 
         <div class="div_deg">
 
-          <form action="{{url('upload_product')}}" method="Post" enctype="multipart/form-data">
+          <form action="{{url('uploadProduct')}}" method="Post" enctype="multipart/form-data">
 
             @csrf
 

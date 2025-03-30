@@ -40,14 +40,11 @@
     <div class="page-header">
       <div class="container-fluid">
 
-
         <h2>Update Product</h2>
-
 
         <div class="div_deg">
 
-
-          <form action="{{url('edit_product', $data->id)}}" method="post" enctype="multipart/form-data">
+          <form action="{{url('editProduct', $data->id)}}" method="post" enctype="multipart/form-data">
 
             @csrf
 
@@ -66,15 +63,10 @@
               <input type="text" name="price" value="{{$data->price}}">
             </div>
 
-
-
-
             <div>
               <label>Quantity</label>
               <input type="number" name="quantity" value="{{$data->quantity}}">
             </div>
-
-
 
             <div>
               <label>Category</label>
@@ -85,16 +77,13 @@
 
                 @foreach($category as $category)
 
-          <option value="{{$category->category_name}}">{{$category->category_name}}</option>
+                <option value="{{$category->category_name}}">{{$category->category_name}}</option>
 
-        @endforeach
+                @endforeach
 
               </select>
 
-
-
             </div>
-
 
             <div>
               <label>Current Image</label>
@@ -110,15 +99,9 @@
               <input class="btn btn-success" type="submit" value="Update Product">
             </div>
 
-
-
-
           </form>
 
-
-
         </div>
-
 
       </div>
     </div>

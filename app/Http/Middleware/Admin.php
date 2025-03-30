@@ -12,14 +12,39 @@ class Admin
     /**
      * Handle an incoming request.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function handle(Request $request, Closure $next): Response
     {
         $usertype = Auth::user()->usertype ?? null;
 
-        // Define access permissions for each user type
-        $routePermissions = [
+        // Permissions for each user role
+        $routePermissions = $this->getRoutePermissions();
+
+        // Validate user type and redirect if unauthorized
+        if (!$usertype || !array_key_exists($usertype, $routePermissions)) {
+            return $this->denyAccess('Access Denied! User type not recognized.');
+        }
+
+        // Check access based on current route
+        $currentRoute = $request->path();
+        if (!$this->hasAccess($currentRoute, $routePermissions[$usertype])) {
+            return $this->denyAccess('Access Denied! You do not have permission to access this resource.');
+        }
+
+        return $next($request);
+    }
+
+    /**
+     * Get route permissions for user types.
+     *
+     * @return array
+     */
+    private function getRoutePermissions(): array
+    {
+        return [
             'admin' => [
                 'admin/dashboard',
                 'view_category',
@@ -62,26 +87,29 @@ class Admin
                 'print_pdf/*',
             ],
         ];
+    }
 
-        // Redirect to home if the user type is invalid or doesn't exist in the permissions
-        if (!$usertype || !isset($routePermissions[$usertype])) {
-            Auth::logout();
-            return redirect('/')->with('error', 'Access Denied! User type not recognized.');
-        }
+    /**
+     * Check if a user has access to the current route.
+     *
+     * @param  string  $currentRoute
+     * @param  array  $allowedRoutes
+     * @return bool
+     */
+    private function hasAccess(string $currentRoute, array $allowedRoutes): bool
+    {
+        return collect($allowedRoutes)->contains(fn($route) => fnmatch($route, $currentRoute));
+    }
 
-        // Check if the current route matches any allowed patterns for the user's role
-        $currentRoute = $request->path();
-        $allowedRoutes = $routePermissions[$usertype];
-        $hasAccess = collect($allowedRoutes)->contains(function ($allowedRoute) use ($currentRoute) {
-            return fnmatch($allowedRoute, $currentRoute);
-        });
-
-        // Deny access if no matching route is found
-        if (!$hasAccess) {
-            Auth::logout();
-            return redirect('/')->with('error', 'Access Denied! You do not have permission to access this resource.');
-        }
-
-        return $next($request);
+    /**
+     * Deny access and redirect with an error message.
+     *
+     * @param  string  $message
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    private function denyAccess(string $message): Response
+    {
+        Auth::logout();
+        return redirect('/')->with('error', $message);
     }
 }

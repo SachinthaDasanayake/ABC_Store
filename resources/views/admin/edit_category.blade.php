@@ -34,7 +34,7 @@
 
         <div class="div_deg">
 
-          <form action="{{url('update_category', $data->id)}}" method="post">
+          <form action="{{url('updateCategory', $data->id)}}" method="post">
 
             @csrf
 

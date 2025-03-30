@@ -4,7 +4,6 @@
 <head>
   @include('admin.css')
 
-
   <style type="text/css">
     .div_deg {
       display: flex;
@@ -49,42 +48,28 @@
     <div class="page-header">
       <div class="container-fluid">
 
-
-        <form action="{{url('product_search')}}" method="get">
+        <form action="{{url('productSearch')}}" method="get">
           @csrf
           <input type="search" name="search">
           <input type="submit" class="btn btn-secondary" value="Search">
         </form>
 
-
         <div class="div_deg">
-
-
 
           <table class="table_deg">
 
             <tr>
 
               <th>Product Title</th>
-
               <th>Description</th>
-
               <th>Category</th>
-
               <th>Price (LKR)</th>
-
               <th>Quantity</th>
-
               <th>Image</th>
-
               <th>Edit</th>
-
               <th>Delete</th>
 
-
-
             </tr>
-
 
             @foreach($product as $products)
 
@@ -107,28 +92,19 @@
           </td>
 
           <td>
-          <a class="btn btn-success" href="{{url('update_product', $products->id)}}">Edit</a>
+          <a class="btn btn-success" href="{{url('updateProduct', $products->id)}}">Edit</a>
           </td>
 
           <td>
           <a class="btn btn-danger" onclick="confirmation(event)"
-            href="{{url('delete_product', $products->id)}}">Delete</a>
+            href="{{url('deleteProduct', $products->id)}}">Delete</a>
           </td>
 
         </tr>
 
       @endforeach
 
-
-
-
           </table>
-
-
-
-
-
-
 
         </div>
 
@@ -137,9 +113,6 @@
           {{$product->onEachSide(1)->links()}}
 
         </div>
-
-
-
 
       </div>
     </div>
