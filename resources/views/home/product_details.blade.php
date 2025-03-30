@@ -6,22 +6,18 @@
   @include('home.css')
 
   <style type="text/css">
-  	
-  	.div_center
-  	{
-  		display: flex;
-  		justify-content: center;
-  		align-items: center;
-  		padding: 30px;
-  	}
+    .div_center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+    }
 
-  	.detail-box
-  	{
-  		padding: 15px;
-  	}
-
+    .detail-box {
+      padding: 15px;
+    }
   </style>
-      
+
 </head>
 
 <body>
@@ -31,93 +27,67 @@
     <!-- end header section -->
 
   </div>
- 
 
+  <!-- Product details start -->
 
- <!-- Product details start -->
-
-
- <section class="shop_section layout_padding">
+  <section class="shop_section layout_padding">
     <div class="container">
       <div class="heading_container heading_center">
         <h2>
-        Product Details
+          Product Details
         </h2>
       </div>
       <div class="row">
 
-         
-
         <div class="col-md-12">
           <div class="box">
-           
-              <div class="div_center">
-                <img width="400" src="/products/{{$data->image}}" alt="">
-              </div>
 
- 
-
-              <div class="detail-box">
-                <h6>{{$data->title}}</h6>
-                <h6>Price
-                  <span>LKR {{$data->price}}</span>
-                </h6>
-              </div>
-
-
-              <div class="detail-box">
-                <h6>Category : {{$data->category}}</h6>
-                
-                <h6>Available Quantity
-                  <span>{{$data->quantity}}</span>
-                </h6>
-              </div>
-
-
-              <div class="detail-box">
-                 
-                
-            
-                  <p>{{$data->description}}</p>
-             
-              </div>
+            <div class="div_center">
+              <img width="400" src="/products/{{$data->image}}" alt="">
+            </div>
 
 
 
-              <div class="detail-box">
-                 
-                
-               <a class="btn btn-primary" href="{{url('add_cart',$data->id)}}">Add to Cart</a>
-                   
-             
-              </div>
+            <div class="detail-box">
+              <h6>{{$data->title}}</h6>
+              <h6>Price
+                <span>LKR {{$data->price}}</span>
+              </h6>
+            </div>
 
 
-               
-            
+            <div class="detail-box">
+              <h6>Category : {{$data->category}}</h6>
+
+              <h6>Available Quantity
+                <span>{{$data->quantity}}</span>
+              </h6>
+            </div>
+
+            <div class="detail-box">
+
+              <p>{{$data->description}}</p>
+
+            </div>
+
+            <div class="detail-box">
+
+              <a class="btn btn-primary" href="{{url('add_cart', $data->id)}}">Add to Cart</a>
+
+            </div>
+
           </div>
         </div>
 
-    
-
-
-        
-        
       </div>
-      
+
     </div>
   </section>
 
-
-
-
-<!-- product details end -->
-
-
-   
+  <!-- product details end -->
 
   <!-- info section -->
-@include('home.footer')
+  @include('home.footer')
 
 </body>
 

@@ -1,65 +1,58 @@
 <!DOCTYPE html>
 <html>
-  <head> 
-   @include('admin.css')
 
+<head>
+  @include('admin.css')
 
-   <style type="text/css">
-     .div_deg
-     {
+  <style type="text/css">
+    .div_deg {
       display: flex;
       justify-content: center;
       align-items: center;
       margin: 60px;
-      }
+    }
 
-      input[type='text']
-      {
-        width: 400px;
-        height: 50px;
-      }
-   </style>
+    input[type='text'] {
+      width: 400px;
+      height: 50px;
+    }
+  </style>
 
+</head>
 
-  </head>
-  <body>
+<body>
 
-    @include('admin.header')
-    
-   @include('admin.sidebar')
-      <!-- Sidebar Navigation end-->
-      <div class="page-content">
-        <div class="page-header">
-          <div class="container-fluid">
+  @include('admin.header')
 
-             <h1 style="color: white;">Update Category</h1>
+  @include('admin.sidebar')
+  <!-- Sidebar Navigation end-->
+  <div class="page-content">
+    <div class="page-header">
+      <div class="container-fluid">
 
-            <div class="div_deg">
-              
-              <form action="{{url('update_category',$data->id)}}" method="post">
+        <h1 style="color: white;">Update Category</h1>
 
-                @csrf
+        <div class="div_deg">
 
-                <input 
-                    type="text" 
-                    name="category" 
-                    placeholder="Enter category name" 
-                    required 
-                    maxlength="50"
-                    pattern="^[a-zA-Z0-9\s]+$"
-                    title="Only alphanumeric characters and spaces are allowed."
-                    value="{{$data->category_name}}">
+          <form action="{{url('update_category', $data->id)}}" method="post">
 
-                <input class="btn btn-primary" type="submit" value="Update Category">
+            @csrf
 
-              </form>
+            <input type="text" name="category" placeholder="Enter category name" required maxlength="50"
+              pattern="^[a-zA-Z0-9\s]+$" title="Only alphanumeric characters and spaces are allowed."
+              value="{{$data->category_name}}">
 
-            </div>
+            <input class="btn btn-primary" type="submit" value="Update Category">
 
-          </div> 
+          </form>
+
+        </div>
+
       </div>
     </div>
-    <!-- JavaScript files-->
-   @include('admin.js')
-  </body>
+  </div>
+  <!-- JavaScript files-->
+  @include('admin.js')
+</body>
+
 </html>

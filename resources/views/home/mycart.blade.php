@@ -8,9 +8,7 @@
 
 
   <style type="text/css">
-    
-    .div_deg
-    {
+    .div_deg {
 
       display: flex;
       justify-content: center;
@@ -18,15 +16,13 @@
       margin: 60px;
     }
 
-    table
-    {
+    table {
       border: 2px solid black;
       text-align: center;
       width: 800px;
     }
 
-    th
-    {
+    th {
       border: 2px solid black;
       text-align: center;
       color: white;
@@ -35,166 +31,138 @@
       background-color: black;
     }
 
-    td
-    {
+    td {
       border: 1px solid skyblue;
     }
 
 
-    .cart_value
-    {
+    .cart_value {
       text-align: center;
       margin-bottom: 70px;
       padding: 18px;
     }
 
 
-    .order_deg
-    {
+    .order_deg {
       padding-right: 100px;
       margin-top: -50px;
     }
 
-    label
-    {
+    label {
       display: inline-block;
       width: 150px;
     }
 
-    .div_gap
-    {
+    .div_gap {
       padding: 20px;
     }
-
-
   </style>
-      
+
 </head>
 
 <body>
   <div class="hero_area">
     <!-- header section strats -->
-    @include('home.header') 
+    @include('home.header')
     <!-- end header section -->
-   
+
   </div>
-   
+
+  <div class="div_deg">
+
+    <table>
+
+      <tr>
+
+        <th>Product Title</th>
+        <th>Price (LKR)</th>
+        <th>Image</th>
+        <th>Remove</th>
+
+      </tr>
+
+      <?php
+
+      $value = 0;
+
+      ?>
 
 
-<div class="div_deg">
+      @foreach($cart as $cart)
 
- 
+        <tr>
 
+        <td>{{$cart->product->title}}</td>
+        <td>{{$cart->product->price}}</td>
+        <td>
+          <img width="150" src="/products/{{$cart->product->image}}">
+        </td>
 
-  
-
-   <table>
-     
-    <tr>
-
-      <th>Product Title</th>
-
-      <th>Price (LKR)</th>
-
-      <th>Image</th>
-
-      <th>Remove</th>
-
-    </tr>
-
-    <?php
-
-    $value=0;
-
-    ?>
+        <td>
+          <a class="btn btn-danger" href="{{url('delete_cart', $cart->id)}}">Remove</a>
+        </td>
 
 
-    @foreach($cart as $cart)
+        </tr>
 
-    <tr>
-      
-      <td>{{$cart->product->title}}</td>
-      <td>{{$cart->product->price}}</td>
-      <td>
-        <img width="150" src="/products/{{$cart->product->image}}">
-      </td>
+        <?php
 
-      <td>
- <a class="btn btn-danger" href="{{url('delete_cart',$cart->id)}}">Remove</a>
-      </td>
+        $value = $value + $cart->product->price;
+
+        ?>
+
+    @endforeach
 
 
-    </tr>
+    </table>
 
+  </div>
 
-    <?php
+  <div class="cart_value">
 
-    $value = $value + $cart->product->price;
+    <h3>Total Value of Cart is : LKR {{$value}}</h3>
 
-    ?>
+  </div>
 
+  <div class="order_deg" style="display: flex; justify-content: center; align-items: center;">
 
-     @endforeach
+    <form action="{{url('comfirm_order')}}" method="Post">
 
+      @csrf
 
-   </table>
+      <div class="div_gap">
+        <label>Receiver Name</label>
 
- </div>
+        <input type="text" name="name" value="{{Auth::user()->name}}">
+      </div>
 
+      <div class="div_gap">
+        <label>Receiver Address</label>
 
-    <div class="cart_value">
-      
-      <h3>Total Value of Cart is : LKR {{$value}}</h3>
+        <textarea name="address">{{Auth::user()->address}}</textarea>
+      </div>
 
-    </div>
+      <div class="div_gap">
+        <label>Receiver Phone</label>
 
+        <input type="text" name="phone" value="{{Auth::user()->phone}}">
+      </div>
 
-     <div class="order_deg" style="display: flex; justify-content: center; align-items: center;">
-   
-  <form action="{{url('comfirm_order')}}" method="Post">
+      <div class="div_gap">
 
-    @csrf
-    
-    <div class="div_gap">
-      <label>Receiver Name</label>
+        <input class="btn btn-primary" type="submit" value="Cash On Delivery">
 
-      <input type="text" name="name" value="{{Auth::user()->name}}">
-    </div>
+        <a class="btn btn-success" href="{{url('stripe', $value)}}">Pay Using Card</a>
 
-    <div class="div_gap">
-      <label>Receiver Address</label>
+      </div>
 
-      <textarea name="address">{{Auth::user()->address}}</textarea>
-    </div>
+    </form>
 
-    <div class="div_gap">
-      <label>Receiver Phone</label>
-
-      <input type="text" name="phone" value="{{Auth::user()->phone}}">
-    </div>
- 
-    <div class="div_gap">
-       
-
-      <input class="btn btn-primary" type="submit" value="Cash On Delivery">
-
-      <a class="btn btn-success" href="{{url('stripe',$value)}}">Pay Using Card</a>
-
-    </div>
-
-
-  </form>
-
-
-
-
- </div>
-
+  </div>
 
   <!-- info section -->
 
-   
-@include('home.footer')
+  @include('home.footer')
 
 </body>
 
