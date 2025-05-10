@@ -1,132 +1,122 @@
 <!DOCTYPE html>
 <html>
-  <head> 
-   @include('admin.css')
 
-   <style type="text/css">
-   	
-   	input[type='text']
-   	{
-   		width: 400px;
-   		height: 50px;
-   	}
+<head>
+	@include('admin.css')
 
-   	.div_deg
-   	{
-   		display: flex;
-   		justify-content: center;
-   		align-items: center;
-   		margin: 30px;
-   	}
+	<style type="text/css">
+		input[type='text'] {
+			width: 400px;
+			height: 50px;
+		}
 
-   	.table_deg
-   	{
+		.div_deg {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin: 30px;
+		}
 
-   		text-align: center;
-   		margin: auto;
-   		border: 2px solid yellowgreen;
-   		margin-top: 50px;
-   		width: 600px;
-   	}
+		.table_deg {
 
-   	th 
-   	{
-   		background-color: skyblue;
-   		padding: 15px;
-   		font-size: 20px;
-   		font-weight: bold;
-   		color: white;
-   	}
+			text-align: center;
+			margin: auto;
+			border: 2px solid yellowgreen;
+			margin-top: 50px;
+			width: 600px;
+		}
 
-   	td 
-   	{
-   		color: white;
-   		padding: 10px;
-   		border: 1px solid skyblue;
-   	}
+		th {
+			background-color: skyblue;
+			padding: 15px;
+			font-size: 20px;
+			font-weight: bold;
+			color: white;
+		}
 
-   </style>
+		td {
+			color: white;
+			padding: 10px;
+			border: 1px solid skyblue;
+		}
+	</style>
 
-  </head>
-  <body>
+</head>
 
-    @include('admin.header')
-    
-   @include('admin.sidebar')
-      <!-- Sidebar Navigation end-->
-      <div class="page-content">
-        <div class="page-header">
-          <div class="container-fluid">
+<body>
 
-          	<h1 style="color: white;">Add Category</h1>
+	@include('admin.header')
 
+	@include('admin.sidebar')
+	<!-- Sidebar Navigation end-->
+	<div class="page-content">
+		<div class="page-header">
+			<div class="container-fluid">
 
-          	<div class="div_deg">
+				<h1 style="color: white;">Add Category</h1>
 
+				<div class="div_deg">
 
+					<!-- Display validation errors -->
+					@if ($errors->any())
+						<div class="alert alert-danger">
+							<ul>
+								@foreach ($errors->all() as $error)
+									<li>{{ $error }}</li>
+								@endforeach
+							</ul>
+						</div>
+					@endif
 
+					<form action="{{url('addCategory')}}" method="post">
 
-           <form action="{{url('add_category')}}" method="post">
+						@csrf
 
-           	@csrf
-           		
-           		<div>
-           			<input type="text" name="category" required>
-           		 
-           			<input class="btn btn-primary" type="submit" value="Add Category">
-           		</div>
+						<div>
+							<input type="text" name="category" placeholder="Enter category name" required maxlength="50"
+								pattern="^[a-zA-Z0-9\s]+$" title="Only alphanumeric characters and spaces are allowed.">
 
+							<input class="btn btn-primary" type="submit" value="Add Category">
+						</div>
+					</form>
+				</div>
 
-           </form>
+				<div>
 
-           </div>
+					<table class="table_deg">
 
-           <div>
-           	
-           		<table class="table_deg">
+						<tr>
+							<th>Category Name</th>
+							<th>Edit</th>
+							<th>Delete</th>
+						</tr>
 
-           			<tr>
-           				<th>Category Name</th>
+						@foreach($data as $data)
 
-                  <th>Edit</th>
+							<tr>
+								<td>{{$data->category_name}}</td>
+								<td>
+									<a class="btn btn-success" href="{{url('editCategory', $data->id)}}">Edit</a>
+								</td>
+								<td>
+									<a class="btn btn-danger" onclick="confirmation(event)"
+										href="{{url('deleteCategory', $data->id)}}">Delete</a>
+								</td>
+							</tr>
 
-                  <th>Delete</th>
-           			</tr>
+						@endforeach
 
-           			@foreach($data as $data)
+					</table>
 
-           			<tr>
-           				<td>{{$data->category_name}}</td>
+				</div>
 
+			</div>
+		</div>
+	</div>
+	<!-- JavaScript files-->
 
-                  <td>
-                    <a class="btn btn-success" href="{{url('edit_category',$data->id)}}">Edit</a>
-                  </td>
+	@include('admin.js')
 
-                  
+</body>
 
-                  <td>
-     <a class="btn btn-danger" onclick="confirmation(event)" href="{{url('delete_category',$data->id)}}">Delete</a>
-                  </td>
-           			</tr>
-
-           			@endforeach
-
-           		</table>
-
-
-           </div>
-
-
-
-
-          </div> 
-      </div>
-    </div>
-    <!-- JavaScript files-->
-
-
-@include('admin.js')
-   
-  </body>
 </html>

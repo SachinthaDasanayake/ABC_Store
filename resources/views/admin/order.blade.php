@@ -1,142 +1,128 @@
 <!DOCTYPE html>
 <html>
-  <head> 
-   @include('admin.css')
 
-   <style type="text/css">
-     
-     table
-     {
+<head>
+  @include('admin.css')
+
+  <style type="text/css">
+    table {
       border: 2px solid skyblue;
       text-align: center;
 
-     }
+    }
 
-     th
-     {
+    th {
 
       background-color: skyblue;
       padding: 10px;
       font-size: 18px;
       font-weight: bold;
       text-align: center;
-       color: white;
-     }
+      color: white;
+    }
 
-     td
-     {
+    td {
       color: white;
       padding: 10px;
       border: 1px solid skyblue;
-     }
+    }
 
 
-     .table_center
-     {
+    .table_center {
       display: flex;
       justify-content: center;
       align-items: center;
-     }
-   </style>
+    }
+  </style>
 
 
-  </head>
-  <body>
+</head>
 
-    @include('admin.header')
-    
-   @include('admin.sidebar')
-      <!-- Sidebar Navigation end-->
-      <div class="page-content">
-        <div class="page-header">
-          <div class="container-fluid">
+<body>
 
+  @include('admin.header')
 
+  @include('admin.sidebar')
+  <!-- Sidebar Navigation end-->
+  <div class="page-content">
+    <div class="page-header">
+      <div class="container-fluid">
 
-              <h3>All Orders</h3>
+        <h3>All Orders</h3>
 
-              <br>
-              <br>
+        <br>
+        <br>
 
+        <div class="table_center">
 
-       <div class="table_center">
+          <table>
+            <tr>
+              <th>Customer name</th>
+              <th>Address</th>
+              <th>Phone</th>
+              <th>Product title</th>
+              <th>Price (LKR)</th>
+              <th>Image</th>
+              <th>Payment Status</th>
+              <th>Status</th>
+              <th>Change Status</th>
+              <th>Print PDF</th>
+            </tr>
 
-           <table>
-             <tr>
-               <th>Customer name</th>
-               <th>Address</th>
-               <th>Phone</th>
-               <th>Product title</th>
-               <th>Price (LKR)</th>
-               <th>Image</th>
-               <th>Payment Status</th>
-               <th>Status</th>
-               <th>Change Status</th>
-               <th>Print PDF</th>
-             </tr>
+            @foreach($data as $data)
 
-              @foreach($data as $data)
+        <tr>
+          <td>{{$data->name}}</td>
+          <td>{{$data->rec_address}}</td>
+          <td>{{$data->phone}}</td>
+          <td>{{$data->product->title}}</td>
+          <td>{{$data->product->price}}</td>
+          <td>
+          <img width="150" src="products/{{$data->product->image}}">
+          </td>
+          <td>{{$data->payment_status}}</td>
 
-             <tr>
-               <td>{{$data->name}}</td>
-               <td>{{$data->rec_address}}</td>
-               <td>{{$data->phone}}</td>
-               <td>{{$data->product->title}}</td>
-               <td>{{$data->product->price}}</td>
-               <td>
-                 
-                <img width="150" src="products/{{$data->product->image}}">
+          <td>
+          @if($data->status == 'in progress')
 
-               </td>
+        <span style="color:red">{{$data->status}}</span>
 
-               <td>{{$data->payment_status}}</td>
+      @elseif($data->status == 'On the way')
 
+      <span style="color:skyblue;">{{$data->status}}</span>
 
-               <td>
-                  
-                  @if($data->status == 'in progress')
+    @else
 
-                  <span style="color:red">{{$data->status}}</span>
+      <span style="color:yellow;">{{$data->status}}</span>
 
-                  @elseif($data->status == 'On the way')
+    @endif
 
+          </td>
 
-                  <span style="color:skyblue;">{{$data->status}}</span>
+          <td>
 
-                  @else
+          <a class="btn btn-primary" href="{{url('onTheWay', $data->id)}}">On the way</a>
 
-                  <span style="color:yellow;">{{$data->status}}</span>
+          <a class="btn btn-success" href="{{url('delivered', $data->id)}}">Delivered</a>
 
-                  @endif
+          </td>
 
+          <td>
+          <a class="btn btn-secondary" href="{{url('printPdf', $data->id)}}">Print PDF</a>
+          </td>
 
-               </td>
+        </tr>
 
-               <td>
+      @endforeach
+          </table>
 
-                 <a class="btn btn-primary" href="{{url('on_the_way',$data->id)}}">On the way</a>
+        </div>
 
-                 <a class="btn btn-success" href="{{url('delivered',$data->id)}}">Delivered</a>
-
-
-               </td>
-
-               <td>
-               <a class="btn btn-secondary" href="{{url('print_pdf',$data->id)}}">Print PDF</a>
-             </td>
-
-             </tr>
-
-             @endforeach
-           </table>
-
-         </div>
-
-
-          </div> 
       </div>
     </div>
-    <!-- JavaScript files-->
-   @include('admin.js')
-  </body>
+  </div>
+  <!-- JavaScript files-->
+  @include('admin.js')
+</body>
+
 </html>

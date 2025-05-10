@@ -1,63 +1,58 @@
 <!DOCTYPE html>
 <html>
-  <head> 
-   @include('admin.css')
 
+<head>
+  @include('admin.css')
 
-   <style type="text/css">
-     .div_deg
-     {
+  <style type="text/css">
+    .div_deg {
       display: flex;
       justify-content: center;
       align-items: center;
       margin: 60px;
-      }
+    }
 
-      input[type='text']
-      {
-        width: 400px;
-        height: 50px;
-      }
-   </style>
+    input[type='text'] {
+      width: 400px;
+      height: 50px;
+    }
+  </style>
 
+</head>
 
-  </head>
-  <body>
+<body>
 
-    @include('admin.header')
-    
-   @include('admin.sidebar')
-      <!-- Sidebar Navigation end-->
-      <div class="page-content">
-        <div class="page-header">
-          <div class="container-fluid">
+  @include('admin.header')
 
-             <h1 style="color: white;">Update Category</h1>
+  @include('admin.sidebar')
+  <!-- Sidebar Navigation end-->
+  <div class="page-content">
+    <div class="page-header">
+      <div class="container-fluid">
 
-            <div class="div_deg">
-              
-             
+        <h1 style="color: white;">Update Category</h1>
 
+        <div class="div_deg">
 
-              <form action="{{url('update_category',$data->id)}}" method="post">
+          <form action="{{url('updateCategory', $data->id)}}" method="post">
 
-                @csrf
+            @csrf
 
-<input type="text" name="category" value="{{$data->category_name}}">
+            <input type="text" name="category" placeholder="Enter category name" required maxlength="50"
+              pattern="^[a-zA-Z0-9\s]+$" title="Only alphanumeric characters and spaces are allowed."
+              value="{{$data->category_name}}">
 
-<input class="btn btn-primary" type="submit" value="Update Category">
+            <input class="btn btn-primary" type="submit" value="Update Category">
 
-              </form>
+          </form>
 
+        </div>
 
-
-            </div>
-
-
-          </div> 
       </div>
     </div>
-    <!-- JavaScript files-->
-   @include('admin.js')
-  </body>
+  </div>
+  <!-- JavaScript files-->
+  @include('admin.js')
+</body>
+
 </html>

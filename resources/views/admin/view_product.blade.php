@@ -1,26 +1,22 @@
 <!DOCTYPE html>
 <html>
-  <head> 
-   @include('admin.css')
 
+<head>
+  @include('admin.css')
 
-   <style type="text/css">
-     
-    .div_deg
-    {
+  <style type="text/css">
+    .div_deg {
       display: flex;
       justify-content: center;
       align-items: center;
       margin-top: 60px;
     }
 
-    .table_deg
-    {
+    .table_deg {
       border: 2px solid greenyellow;
     }
 
-    th
-    {
+    th {
       background-color: skyblue;
       color: white;
       font-size: 19px;
@@ -28,128 +24,101 @@
       padding: 15px;
     }
 
-    td 
-    {
+    td {
       border: 1px solid skyblue;
       text-align: center;
       color: white;
     }
 
-    input[type='search']
-    {
+    input[type='search'] {
       width: 500px;
       height: 60px;
       margin-left: 50px;
     }
+  </style>
+</head>
 
+<body>
 
-   </style>
-  </head>
-  <body>
+  @include('admin.header')
 
-    @include('admin.header')
-    
-   @include('admin.sidebar')
-      <!-- Sidebar Navigation end-->
-      <div class="page-content">
-        <div class="page-header">
-          <div class="container-fluid">
+  @include('admin.sidebar')
+  <!-- Sidebar Navigation end-->
+  <div class="page-content">
+    <div class="page-header">
+      <div class="container-fluid">
 
+        <form action="{{url('productSearch')}}" method="get">
+          @csrf
+          <input type="search" name="search">
+          <input type="submit" class="btn btn-secondary" value="Search">
+        </form>
 
-            <form action="{{url('product_search')}}" method="get">
-              @csrf
-              <input type="search" name="search">
-              <input type="submit" class="btn btn-secondary" value="Search">
-            </form>
+        <div class="div_deg">
 
+          <table class="table_deg">
 
-            <div class="div_deg">
+            <tr>
 
+              <th>Product Title</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Price (LKR)</th>
+              <th>Quantity</th>
+              <th>Image</th>
+              <th>Edit</th>
+              <th>Delete</th>
 
-              
-              <table class="table_deg">
+            </tr>
 
-                <tr>
+            @foreach($product as $products)
 
-                  <th>Product Title</th>
+        <tr>
 
-                  <th>Description</th>
+          <td>{{$products->title}}</td>
 
-                  <th>Category</th>
+          <td>{!!Str::limit($products->description, 50)!!}</td>
 
-                  <th>Price (LKR)</th>
+          <td>{{$products->category}}</td>
 
-                  <th>Quantity</th>
+          <td>{{$products->price}}</td>
 
-                  <th>Image</th>
+          <td>{{$products->quantity}}</td>
 
-                  <th>Edit</th>
+          <td>
 
-                  <th>Delete</th>
+          <img height="120" width="120" src="products/{{$products->image}}">
 
+          </td>
 
+          <td>
+          <a class="btn btn-success" href="{{url('updateProduct', $products->id)}}">Edit</a>
+          </td>
 
-                </tr>
+          <td>
+          <a class="btn btn-danger" onclick="confirmation(event)"
+            href="{{url('deleteProduct', $products->id)}}">Delete</a>
+          </td>
 
+        </tr>
 
-                @foreach($product as $products)
+      @endforeach
 
-                <tr>
-                  
-                  <td>{{$products->title}}</td>
+          </table>
 
-                  <td>{!!Str::limit($products->description,50)!!}</td>
+        </div>
 
-                  <td>{{$products->category}}</td>
+        <div class="div_deg">
 
-                  <td>{{$products->price}}</td>
+          {{$product->onEachSide(1)->links()}}
 
-                  <td>{{$products->quantity}}</td>
+        </div>
 
-                  <td>
-                    
-                    <img height="120" width="120" src="products/{{$products->image}}">
-
-                  </td>
-
-                  <td>
-                    <a class="btn btn-success" href="{{url('update_product',$products->id)}}">Edit</a>
-                  </td>
-
-                  <td>
-                    <a class="btn btn-danger" onclick="confirmation(event)" href="{{url('delete_product',$products->id)}}">Delete</a>
-                  </td>
-
-                </tr>
-
-                @endforeach
-
-
-
-              
-              </table>
-
-
-
-
-
-
-
-            </div>
-
-            <div class="div_deg">
-
-              {{$product->onEachSide(1)->links()}}
-              
-            </div>
-
-             
-
-
-          </div> 
       </div>
     </div>
-    <!-- JavaScript files-->
-   @include('admin.js')
-  </body>
+  </div>
+  <!-- JavaScript files-->
+  @include('admin.js')
+</body>
+
 </html>
